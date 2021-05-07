@@ -62,12 +62,12 @@ class Drug(TimestampMixin, db.Model):
     drug
     """
     id = db.Column(db.Integer, primary_key=True)
-    book_type = db.Column(db.Integer, db.ForeignKey('book_type.id'))
-    minimum_charge = db.Column(db.Numeric(5, 2))
-    no_of_days = db.Column(db.Integer)
+    drug_category = db.Column(db.Integer, db.ForeignKey('drug_category.id'))
+    name = db.Column(db.String(64), index=True, unique=True)
 
     def __repr__(self):
-        return f'Drug {self.username}'
+        drug_category = DrugCategory.query.filter_by(id=self.drug_category).first()
+        return f'Drug {self.name} of {drug_category} category'
 
 
 class Dosage(TimestampMixin, db.Model):
@@ -84,6 +84,14 @@ class Dosage(TimestampMixin, db.Model):
         user = User.query.filter_by(id=self.user_id).first()
         drug = Drug.query.filter_by(id=self.drug_id).first()
         return f'{drug.name} has been prescribed to {user.first_name} {user.last_name}'
+
+    def get_user(self):
+        user = User.query.filter_by(id=self.user_id).first()
+        return user.get_full_name()
+
+    def get_drug(self):
+        drug = Drug.query.filter_by(id=self.drug_id).first()
+        return drug.name
 
     def get_interval(self):
         user = User.query.filter_by(id=self.user_id).first()

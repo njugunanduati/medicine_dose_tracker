@@ -35,4 +35,4 @@ if not app.debug:
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
 
-from app import views, models
+from app import views, models, errors
